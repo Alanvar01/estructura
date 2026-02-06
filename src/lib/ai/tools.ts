@@ -8,7 +8,6 @@ import { like, or } from 'drizzle-orm'
 export const searchProductsTool = tool(
   async ({ query }) => {
     try {
-      // Buscamos productos que coincidan en nombre o clasificación
       const results = await db
         .select()
         .from(productos)
@@ -22,7 +21,6 @@ export const searchProductsTool = tool(
 
       if (results.length === 0) return 'No se encontraron productos con ese criterio.'
       
-      // Convertimos a string para que la IA lo pueda leer
       return JSON.stringify(results)
     } catch (error) {
       console.error(error)

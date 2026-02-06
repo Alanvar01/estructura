@@ -23,3 +23,14 @@ export async function getChatMessages(chatId: number) {
     
   return data
 }
+
+export async function deleteConversation(chatId: number) {
+  try {
+    await db.delete(mensajes).where(eq(mensajes.conversacionId, chatId))
+    await db.delete(conversaciones).where(eq(conversaciones.id, chatId))
+    return { success: true }
+  } catch (error) {
+    console.error('Error eliminando chat:', error)
+    return { success: false }
+  }
+}

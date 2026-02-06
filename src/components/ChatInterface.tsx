@@ -2,8 +2,10 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Button } from '@/src/components/ui/button'
-import { Send, Bot, Loader2, Sparkles, MessageSquare, Plus } from 'lucide-react'
-import { getConversations, getChatMessages } from '@/src/app/actions'
+// 1. Agregamos Trash2 a los iconos
+import { Send, Bot, Loader2, Sparkles, MessageSquare, Plus, Trash2 } from 'lucide-react'
+// 2. Importamos la acción de borrar
+import { getConversations, getChatMessages, deleteConversation } from '@/src/app/actions'
 
 interface ChatInterfaceProps {
   userName?: string
@@ -31,8 +33,6 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-
-
 
   const loadHistoryList = useCallback(async () => {
     if (!userId) return
@@ -75,7 +75,23 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
     }])
   }
 
+  // 3. NUEVA FUNCIÓN PARA BORRAR
+  const handleDeleteChat = async (e: React.MouseEvent, chatId: number) => {
+    e.stopPropagation() // Evita que se abra el chat al hacer click en borrar
+    
+    if (!confirm('¿Estás seguro de querer borrar esta conversación?')) return
 
+    // Actualización optimista (lo borramos de la vista inmediatamente)
+    setConversations((prev) => prev.filter((c) => c.id !== chatId))
+
+    // Si borramos el chat que estamos viendo, limpiamos la pantalla
+    if (currentChatId === chatId) {
+      startNewChat()
+    }
+
+    // Llamada al servidor
+    await deleteConversation(chatId)
+  }
 
   useEffect(() => {
     loadHistoryList()
@@ -167,7 +183,7 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
           </div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-            <span className="text-xs text-muted-foreground font-medium">En línea</span>
+            <span className="text-xs text-muted-foreground font-medium">en linea</span>
           </div>
         </div>
 
@@ -224,7 +240,7 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder={`Escribe como ${userName}...`}
+              placeholder={`Escribe algo ${userName}...`}
               className="flex-1 px-4 py-2 bg-transparent focus:outline-none text-sm placeholder:text-muted-foreground/70"
               disabled={isLoading}
             />
@@ -262,17 +278,29 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
             <button
               key={chat.id}
               onClick={() => loadConversation(chat.id)}
-              className={`w-full text-left p-3 rounded-xl text-sm transition-all flex items-start gap-3 group
+              className={`w-full text-left p-3 rounded-xl text-sm transition-all flex items-center gap-3 group relative pr-8
                         ${currentChatId === chat.id  
               ? 'bg-primary text-primary-foreground shadow-md scale-[1.02]' 
               : 'hover:bg-muted/60 text-foreground/80 hover:scale-[1.01]'}
             `}>
               <MessageSquare size={16} className={`mt-0.5 shrink-0 ${currentChatId === chat.id ? 'text-white' : 'text-muted-foreground group-hover:text-primary'}`} />
+              
               <div className="flex-1 min-w-0">
                 <span className="font-medium block truncate">{chat.titulo}</span>
                 <span className={`text-[10px] truncate block ${currentChatId === chat.id ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
                   {new Date(chat.createdAt).toLocaleDateString()}
                 </span>
+              </div>
+
+              {/* 4. BOTÓN DE ELIMINAR (Solo visible en hover o si es el activo) */}
+              <div 
+                onClick={(e) => handleDeleteChat(e, chat.id)}
+                className={`absolute right-2 p-1.5 rounded-full hover:bg-destructive hover:text-white transition-all opacity-0 group-hover:opacity-100
+                  ${currentChatId === chat.id ? 'text-white/70 hover:text-white' : 'text-muted-foreground'}
+                `}
+                title="Eliminar conversación"
+              >
+                <Trash2 size={14} />
               </div>
             </button>            
           ))}
