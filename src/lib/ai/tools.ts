@@ -25,6 +25,7 @@ export const searchProductsTool = tool(
       // Convertimos a string para que la IA lo pueda leer
       return JSON.stringify(results)
     } catch (error) {
+      console.error(error)
       return 'Error al consultar la base de datos de productos.'
     }
   },
@@ -50,6 +51,7 @@ export const searchMachinesTool = tool(
       if (results.length === 0) return 'No hay máquinas registradas con ese nombre.'
       return JSON.stringify(results)
     } catch (error) {
+      console.error(error)
       return 'Error al consultar la maquinaria.'
     }
   },
@@ -69,6 +71,7 @@ export const listProveedoresTool = tool(
       const results = await db.select().from(infoProveedor)
       return JSON.stringify(results)
     } catch (error) {
+      console.error(error)
       return 'Error al leer proveedores.'
     }
   },

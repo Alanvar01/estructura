@@ -33,6 +33,7 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
 
+
   const loadHistoryList = useCallback(async () => {
     if (!userId) return
     try {
@@ -73,6 +74,9 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
       content: `¡Hola ${userName}! Inicia una nueva conversación.`
     }])
   }
+
+
+
   useEffect(() => {
     loadHistoryList()
   }, [loadHistoryList]) 
@@ -145,10 +149,11 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
   const userInitial = userName.charAt(0).toUpperCase()
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] h-[calc(100vh-2rem)] w-full max-w-[98%] mx-auto border border-border/40 rounded-3xl shadow-2xl bg-card/95 backdrop-blur-sm overflow-hidden">
+    <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] h-full w-full max-w-[98%] mx-auto border border-border/40 rounded-3xl shadow-2xl bg-card/95 backdrop-blur-sm overflow-hidden">
 
-      <div className="flex flex-col h-full border-r border-border/10 relative">
-        <div className="bg-background/80 backdrop-blur-md p-4 border-b border-border/10 flex items-center justify-between sticky top-0 z-10">
+      <div className="flex flex-col h-full border-r border-border/10 relative min-h-0">
+        
+        <div className="flex-none bg-background/80 backdrop-blur-md p-4 border-b border-border/10 flex items-center justify-between sticky top-0 z-10">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-sm">
               <Sparkles size={20} />
@@ -166,7 +171,7 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-transparent to-muted/5">
+        <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-transparent to-muted/5">
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -209,7 +214,8 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="p-4 bg-background/80 backdrop-blur-md border-t border-border/10">
+    
+        <div className="flex-none p-4 bg-background/80 backdrop-blur-md border-t border-border/10">
           <form 
             onSubmit={handleSendMessage} 
             className="flex gap-3 items-center bg-muted/30 p-2 rounded-full border border-border/40 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all shadow-sm"
@@ -234,15 +240,16 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
         </div>
       </div>
 
-      <div className="bg-muted/7 h-full flex flex-col hidden md:flex border-l border-border/5">
-        <div className="p-7  border-b border-border/10 bg-background/50 backdrop-blur-sm">
+      <div className="relative bg-muted/10 h-full hidden md:block border-l border-border/5 overflow-hidden">
+        
+        <div className="absolute top-0 left-0 w-full p-4 border-b border-border/10 bg-background/50 backdrop-blur-sm z-10">
           <Button onClick={startNewChat} variant="outline" className="w-full justify-start gap-2 bg-background shadow-sm hover:bg-primary/5 border-primary/20 text-primary transition-all">
             <Plus size={16} />
                 Nueva Conversación
           </Button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+        <div className="h-full overflow-y-auto p-3 pt-24 space-y-2">
           <p className="text-[10px] font-bold text-muted-foreground/60 px-3 mb-2 uppercase tracking-wider">Historial</p>
             
           {conversations.length === 0 && (
