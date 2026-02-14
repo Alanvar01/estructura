@@ -2,9 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Button } from '@/src/components/ui/button'
-// 1. Agregamos Trash2 a los iconos
 import { Send, Bot, Loader2, Sparkles, MessageSquare, Plus, Trash2 } from 'lucide-react'
-// 2. Importamos la acción de borrar
 import { getConversations, getChatMessages, deleteConversation } from '@/src/app/actions'
 
 interface ChatInterfaceProps {
@@ -75,21 +73,17 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
     }])
   }
 
-  // 3. NUEVA FUNCIÓN PARA BORRAR
   const handleDeleteChat = async (e: React.MouseEvent, chatId: number) => {
-    e.stopPropagation() // Evita que se abra el chat al hacer click en borrar
+    e.stopPropagation() 
     
     if (!confirm('¿Estás seguro de querer borrar esta conversación?')) return
 
-    // Actualización optimista (lo borramos de la vista inmediatamente)
     setConversations((prev) => prev.filter((c) => c.id !== chatId))
 
-    // Si borramos el chat que estamos viendo, limpiamos la pantalla
     if (currentChatId === chatId) {
       startNewChat()
     }
 
-    // Llamada al servidor
     await deleteConversation(chatId)
   }
 
@@ -165,29 +159,29 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
   const userInitial = userName.charAt(0).toUpperCase()
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] h-full w-full max-w-[98%] mx-auto border border-border/40 rounded-3xl shadow-2xl bg-card/95 backdrop-blur-sm overflow-hidden">
+    <div className='grid grid-cols-1 md:grid-cols-[1fr_300px] h-full w-full max-w-[98%] mx-auto border border-border/40 rounded-3xl shadow-2xl bg-card/95 backdrop-blur-sm overflow-hidden'>
 
-      <div className="flex flex-col h-full border-r border-border/10 relative min-h-0">
+      <div className='flex flex-col h-full border-r border-border/10 relative min-h-0'>
         
-        <div className="flex-none bg-background/80 backdrop-blur-md p-4 border-b border-border/10 flex items-center justify-between sticky top-0 z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-sm">
+        <div className='flex-none bg-background/80 backdrop-blur-md p-4 border-b border-border/10 flex items-center justify-between sticky top-0 z-10'>
+          <div className='flex items-center gap-3'>
+            <div className='w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-sm'>
               <Sparkles size={20} />
             </div>
             <div>
-              <h2 className="font-bold text-lg tracking-tight">GIMM</h2>
-              <p className="text-xs text-muted-foreground font-medium">
+              <h2 className='font-bold text-lg tracking-tight'>GIMM</h2>
+              <p className='text-xs text-muted-foreground font-medium'>
                 {currentChatId ? 'Conversación Activa' : 'Nueva Conversación'}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-            <span className="text-xs text-muted-foreground font-medium">en linea</span>
+          <div className='flex items-center gap-2'>
+            <span className='w-2 h-2 rounded-full bg-green-500 animate-pulse'></span>
+            <span className='text-xs text-muted-foreground font-medium'>en linea</span>
           </div>
         </div>
 
-        <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-transparent to-muted/5">
+        <div className='flex-1 min-h-0 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-transparent to-muted/5'>
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -217,13 +211,13 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
           ))}
 
           {isLoading && (
-            <div className="flex gap-4 animate-in fade-in duration-300">
-              <div className="w-10 h-10 rounded-full bg-background border flex items-center justify-center shadow-sm">
-                <Bot size={18} className="text-muted-foreground" />
+            <div className='flex gap-4 animate-in fade-in duration-300'>
+              <div className='w-10 h-10 rounded-full bg-background border flex items-center justify-center shadow-sm'>
+                <Bot size={18} className='text-muted-foreground' />
               </div>
-              <div className="bg-muted/50 p-4 rounded-2xl rounded-tl-sm border border-border/20 flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                <span className="text-xs text-muted-foreground font-medium">Analizando...</span>
+              <div className='bg-muted/50 p-4 rounded-2xl rounded-tl-sm border border-border/20 flex items-center gap-2'>
+                <Loader2 className='w-4 h-4 animate-spin text-primary' />
+                <span className='text-xs text-muted-foreground font-medium'>Analizando...</span>
               </div>
             </div>
           )}
@@ -231,45 +225,45 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
         </div>
 
     
-        <div className="flex-none p-4 bg-background/80 backdrop-blur-md border-t border-border/10">
+        <div className='flex-none p-4 bg-background/80 backdrop-blur-md border-t border-border/10'>
           <form 
             onSubmit={handleSendMessage} 
-            className="flex gap-3 items-center bg-muted/30 p-2 rounded-full border border-border/40 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all shadow-sm"
+            className='flex gap-3 items-center bg-muted/30 p-2 rounded-full border border-border/40 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all shadow-sm'
           >
             <input
-              type="text"
+              type='text'
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder={`Escribe algo ${userName}...`}
-              className="flex-1 px-4 py-2 bg-transparent focus:outline-none text-sm placeholder:text-muted-foreground/70"
+              className='flex-1 px-4 py-2 bg-transparent focus:outline-none text-sm placeholder:text-muted-foreground/70'
               disabled={isLoading}
             />
             <Button 
-              type="submit" 
-              size="icon"
+              type='submit' 
+              size='icon'
               disabled={isLoading || !inputValue.trim()}
-              className="rounded-full h-10 w-10 shrink-0 shadow-sm"
+              className='rounded-full h-10 w-10 shrink-0 shadow-sm'
             >
-              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 ml-0.5" />}
+              {isLoading ? <Loader2 className='w-4 h-4 animate-spin' /> : <Send className='w-4 h-4 ml-0.5' />}
             </Button>
           </form>
         </div>
       </div>
 
-      <div className="relative bg-muted/10 h-full hidden md:block border-l border-border/5 overflow-hidden">
+      <div className='relative bg-muted/10 h-full hidden md:block border-l border-border/5 overflow-hidden'>
         
-        <div className="absolute top-0 left-0 w-full p-4 border-b border-border/10 bg-background/50 backdrop-blur-sm z-10">
-          <Button onClick={startNewChat} variant="outline" className="w-full justify-start gap-2 bg-background shadow-sm hover:bg-primary/5 border-primary/20 text-primary transition-all">
+        <div className='absolute top-0 left-0 w-full p-4 border-b border-border/10 bg-background/50 backdrop-blur-sm z-10'>
+          <Button onClick={startNewChat} variant='outline' className='w-full justify-start gap-2 bg-background shadow-sm hover:bg-primary/5 border-primary/20 text-primary transition-all'>
             <Plus size={16} />
                 Nueva Conversación
           </Button>
         </div>
 
-        <div className="h-full overflow-y-auto p-3 pt-24 space-y-2">
-          <p className="text-[10px] font-bold text-muted-foreground/60 px-3 mb-2 uppercase tracking-wider">Historial</p>
+        <div className='h-full overflow-y-auto p-3 pt-24 space-y-2'>
+          <p className='text-[10px] font-bold text-muted-foreground/60 px-3 mb-2 uppercase tracking-wider'>Historial</p>
             
           {conversations.length === 0 && (
-            <div className="text-center p-8 text-xs text-muted-foreground/50 italic">
+            <div className='text-center p-8 text-xs text-muted-foreground/50 italic'>
                     No hay conversaciones previas.
             </div>
           )}
@@ -285,20 +279,20 @@ export default function ChatInterface({ userName = 'Alan', userId = 1 }: ChatInt
             `}>
               <MessageSquare size={16} className={`mt-0.5 shrink-0 ${currentChatId === chat.id ? 'text-white' : 'text-muted-foreground group-hover:text-primary'}`} />
               
-              <div className="flex-1 min-w-0">
-                <span className="font-medium block truncate">{chat.titulo}</span>
+              <div className='flex-1 min-w-0'>
+                <span className='font-medium block truncate'>{chat.titulo}</span>
                 <span className={`text-[10px] truncate block ${currentChatId === chat.id ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
                   {new Date(chat.createdAt).toLocaleDateString()}
                 </span>
               </div>
 
-              {/* 4. BOTÓN DE ELIMINAR (Solo visible en hover o si es el activo) */}
+              {/* BOTÓN DE ELIMINAR */}
               <div 
                 onClick={(e) => handleDeleteChat(e, chat.id)}
                 className={`absolute right-2 p-1.5 rounded-full hover:bg-destructive hover:text-white transition-all opacity-0 group-hover:opacity-100
                   ${currentChatId === chat.id ? 'text-white/70 hover:text-white' : 'text-muted-foreground'}
                 `}
-                title="Eliminar conversación"
+                title='Eliminar conversación'
               >
                 <Trash2 size={14} />
               </div>

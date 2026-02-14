@@ -1,14 +1,29 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { Button } from '@/src/components/ui/button'
 import { Bot, X } from 'lucide-react'
 import ChatInterface from '@/src/components/ChatInterface'
+import { getCurrentUser } from '@/src/app/actions' 
 
-export default function FloatingChat({ userName = 'Alan' }: { userName?: string }) {
+export default function FloatingChat() {
   const [isOpen, setIsOpen] = useState(false)
   const [showGreeting, setShowGreeting] = useState(true) 
-  const [isExiting, setIsExiting] = useState(false)     
+  const [isExiting, setIsExiting] = useState(false)   
+  const [userName, setUserName] = useState('...')  
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const currentTab = searchParams.get('tab')
+
+  useEffect(() => {
+    async function fetchUser() {
+      const user = await getCurrentUser()
+      const capitalizedName = user.username.charAt(0).toUpperCase() + user.username.slice(1)
+      setUserName(capitalizedName)
+    }
+    fetchUser()
+  }, [pathname])
 
   useEffect(() => {
     const totalTime = 10000 
@@ -27,6 +42,14 @@ export default function FloatingChat({ userName = 'Alan' }: { userName?: string 
       clearTimeout(removeTimer)
     }
   }, [])
+
+  if (
+    pathname === '/' || 
+    pathname === '/login' || 
+    (pathname?.includes('/dashboard') && currentTab === 'chat')
+  ) {
+    return null
+  }
 
   return (
     <>
@@ -49,19 +72,19 @@ export default function FloatingChat({ userName = 'Alan' }: { userName?: string 
       `}</style>
 
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="relative w-full h-full md:p-6 flex items-center justify-center">
+        <div className='fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm animate-in fade-in duration-300'>
+          <div className='relative w-full h-full md:p-6 flex items-center justify-center'>
             
             <Button 
-              size="icon" 
-              variant="outline" 
-              className="absolute top-7 right-40 z-50 rounded-full bg-background shadow-md hover:bg-destructive hover:text-white border-2"
+              size='icon' 
+              variant='outline' 
+              className='absolute top-7 right-40 z-50 rounded-full bg-background shadow-md hover:bg-destructive hover:text-white border-2'
               onClick={() => setIsOpen(false)}
             >
               <X size={24} />
             </Button>
 
-            <div className="w-full h-full max-w-6xl flex items-center justify-center animate-in zoom-in-95 duration-300">
+            <div className='w-full h-full max-w-6xl flex items-center justify-center animate-in zoom-in-95 duration-300'>
               <ChatInterface userName={userName} />
             </div>
           </div>
@@ -69,7 +92,7 @@ export default function FloatingChat({ userName = 'Alan' }: { userName?: string 
       )}
 
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
+        <div className='fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none'>
       
           {showGreeting && (
             <div className={`pointer-events-auto mr-2 mb-1 duration-500 ease-out fill-mode-forwards
@@ -77,20 +100,20 @@ export default function FloatingChat({ userName = 'Alan' }: { userName?: string 
               ? 'animate-out slide-out-to-bottom-5 fade-out zoom-out-50' 
               : 'animate-in slide-in-from-bottom-5 fade-in zoom-in-50'  
             }`}>
-              <div className="relative bg-white dark:bg-zinc-900 text-foreground px-5 py-3 rounded-2xl rounded-br-sm shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-border/50 text-sm font-semibold flex items-center gap-2 group cursor-pointer hover:scale-105 transition-transform"
+              <div className='relative bg-white dark:bg-zinc-900 text-foreground px-5 py-3 rounded-2xl rounded-br-sm shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-border/50 text-sm font-semibold flex items-center gap-2 group cursor-pointer hover:scale-105 transition-transform'
                 onClick={() => setIsOpen(true)}>
                 <span>Hola, {userName}</span>
-                <span className="waving-hand text-lg">👋</span>
+                <span className='waving-hand text-lg'>👋</span>
 
-                <div className="absolute -bottom-2 right-0 w-4 h-4 bg-white dark:bg-zinc-900 border-r border-b border-border/50 transform rotate-45 translate-x-[-8px]"></div>
+                <div className='absolute -bottom-2 right-0 w-4 h-4 bg-white dark:bg-zinc-900 border-r border-b border-border/50 transform rotate-45 translate-x-[-8px]'></div>
               </div>
             </div>
           )}
-          <div className="pointer-events-auto animate-in zoom-in duration-300 delay-150">
+          <div className='pointer-events-auto animate-in zoom-in duration-300 delay-150'>
             <Button
               onClick={() => setIsOpen(true)}
-              size="icon"
-              className="h-16 w-16 rounded-full shadow-2xl bg-gradient-to-br from-primary to-primary/80 hover:to-primary text-primary-foreground border-4 border-background transition-all hover:scale-110 hover:shadow-primary/25 active:scale-95 ring-0 ring-primary/20 hover:ring-4"
+              size='icon'
+              className='h-16 w-16 rounded-full shadow-2xl bg-gradient-to-br from-primary to-primary/80 hover:to-primary text-primary-foreground border-4 border-background transition-all hover:scale-110 hover:shadow-primary/25 active:scale-95 ring-0 ring-primary/20 hover:ring-4'
             >
               <Bot size={32} />
             </Button>
