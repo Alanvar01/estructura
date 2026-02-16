@@ -19,8 +19,10 @@ export default function FloatingChat() {
   useEffect(() => {
     async function fetchUser() {
       const user = await getCurrentUser()
-      const capitalizedName = user.username.charAt(0).toUpperCase() + user.username.slice(1)
-      setUserName(capitalizedName)
+      if (user && user.username) {
+        const capitalizedName = user.username.charAt(0).toUpperCase() + user.username.slice(1)
+        setUserName(capitalizedName)
+      }
     }
     fetchUser()
   }, [pathname])
@@ -100,12 +102,11 @@ export default function FloatingChat() {
               ? 'animate-out slide-out-to-bottom-5 fade-out zoom-out-50' 
               : 'animate-in slide-in-from-bottom-5 fade-in zoom-in-50'  
             }`}>
-              <div className='relative bg-white dark:bg-zinc-900 text-foreground px-5 py-3 rounded-2xl rounded-br-sm shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-border/50 text-sm font-semibold flex items-center gap-2 group cursor-pointer hover:scale-105 transition-transform'
+              <div className='relative bg-white dark:bg-zinc-950 text-foreground px-5 py-3 rounded-2xl rounded-br-sm shadow-[0_10px_40px_rgba(0,0,0,0.2)] border-2 border-white dark:border-zinc-960 text-sm font-semibold flex items-center gap-2 group cursor-pointer hover:scale-105 transition-transform'
                 onClick={() => setIsOpen(true)}>
                 <span>Hola, {userName}</span>
                 <span className='waving-hand text-lg'>👋</span>
-
-                <div className='absolute -bottom-2 right-0 w-4 h-4 bg-white dark:bg-zinc-900 border-r border-b border-border/50 transform rotate-45 translate-x-[-8px]'></div>
+                <div className='absolute -bottom-[6px] right-[-2px] w-4 h-4 bg-white dark:bg-zinc-900 border-r-2 border-b-2 border-white dark:border-zinc-1000 transform rotate-45 translate-x-[-8px]'></div>
               </div>
             </div>
           )}
